@@ -1,0 +1,68 @@
+---
+title: "Superstore Dataset"
+author: "Zeid El Ameli"
+date: "4/11/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+With growing demands and cut-throat competitions in the grocery-shopping market, a Superstore Giant is seeking to analyze their historical data to underatand what works best for them. They would like to understand which products, regions, categories ,and consumer segments they should target or avoid.
+
+The dataset includes customer orders from a specific timeframe. The data is collected from the company's Point-of-Sale system, stored as a CSV (comma separated values) in a tabular format. Usually, we use Microsoft Excel to open this file, but today we will be using R to do some analysis on it!
+
+Below is the block of code to read and print the header (first 6 rows) of the dataset.
+We included header = TRUE which tells R that this dataset has a header row (row 1) and sep = "," to denote the type of separator in this file (not necessary)
+
+```{r superstore, echo=TRUE}
+# read the csv file superstore and naming it super_store
+super_store <- read.csv(file = 'C:/Users/zeida/Documents/superstore.csv', header = TRUE, sep = ",")
+head(super_store)
+```
+We can see that Order.Date and Ship.Date are both dates, but stored as strings. So let's change the data type to Date
+
+
+```{r , echo = TRUE }
+super_store$Order.Date <- as.Date(super_store$Order.Date)
+super_store$Ship.Date <- as.Date(super_store$Ship.Date)
+head(super_store)
+```
+
+This looks a lot better! Now we see that we don't need the Row.ID column (R has indexing within) among other columns that we won't be using today. Let's choose the most important ones.
+
+```{r , echo=TRUE}
+sub_superstore <- super_store[c(3,11,15,18)]
+nrows <- nrow(sub_superstore)
+ncols <- ncol(sub_superstore)
+Name <- c("Order Date", "State", "Category", "Sales")
+Description <- c("The date when the customer placed the order", "The state the order needs to be shipped to", "Product category - Furniture, Office Supplies, etc...", "Sales amount in USD")
+df <- data.frame(Name,Description)
+Table <- knitr::kable(df,"pipe")
+
+
+```
+
+Good thing that our dataset has no null cells for us to drop (talk about clean data!)
+Now let's talk about our newly created dataframe. Our dataframe has `r nrows` rows and `r ncols` columns. The names of the columns and a brief description is below:
+
+`r Table`
+
+Now on to the fun stuff, let's look at our sales numbers and get some summary statistics on them!
+
+```{r, echo=TRUE}
+max_val <- max(sub_superstore$Sales)
+min_val <- min(sub_superstore$Sales)
+mean_val <- mean(sub_superstore$Sales)
+na_count <- sum(is.na(sub_superstore$Sales))
+```
+
+The max sales value was `r max_val` USD
+The minimum sales value was `r min_val` USD
+The average sales value was `r mean_val` USD
+There are `r na_count` NULL values in this column
+
+
+Thanks for reading my Markdown! See you soon!
+
